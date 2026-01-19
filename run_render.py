@@ -3,25 +3,25 @@ import subprocess
 import sys
 import time
 
-# Pega a porta que o Render quer usar (ou 8501 se for local)
+# Pega a porta do Render
 port = os.environ.get("PORT", "8501")
 
-print("🦁 [RENDER] Iniciando API na porta 8000...")
+print("🦁 [RENDER] Modo Raiz Ativado.")
+print(f"📂 Arquivos na pasta: {os.listdir('.')}")
 
-# 1. Inicia a API em Segundo Plano (subprocesso)
-# Usamos sys.executable para garantir que é o mesmo Python
-api_process = subprocess.Popen([
-    sys.executable, "-m", "uvicorn", "app.main:app", 
+# 1. Inicia a API (main.py solto na raiz)
+print("🦁 [RENDER] Iniciando API (main:app) na porta 8000...")
+subprocess.Popen([
+    sys.executable, "-m", "uvicorn", "main:app", 
     "--host", "0.0.0.0", 
     "--port", "8000"
 ])
 
-# Espera um pouco a API acordar
+# Espera 5 segundos honestos
 time.sleep(5)
 
+# 2. Inicia o Streamlit
 print(f"🎨 [RENDER] Iniciando Streamlit na porta {port}...")
-
-# 2. Inicia o Streamlit (Bloqueia o script aqui para o Render não achar que acabou)
 subprocess.run([
     sys.executable, "-m", "streamlit", "run", "app_visual.py",
     "--server.port", port,

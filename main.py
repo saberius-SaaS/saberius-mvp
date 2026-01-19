@@ -11,10 +11,13 @@ import time
 import os
 from rapidfuzz import fuzz # O Cérebro Inteligente
 
-# === CONFIGURAÇÃO DO BANCO ===
+# ==========================================
+# 1. BANCO DE DADOS (Versão Blindada para Deploy)
+# ==========================================
+# Pega a pasta onde este arquivo está
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-ROOT_DIR = os.path.dirname(BASE_DIR) 
-DB_PATH = os.path.join(ROOT_DIR, "saberius.db")
+# Salva o banco na MESMA pasta, sem inventar moda de subir nível
+DB_PATH = os.path.join(BASE_DIR, "saberius.db")
 SQLALCHEMY_DATABASE_URL = f"sqlite:///{DB_PATH}"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})

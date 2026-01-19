@@ -3,24 +3,29 @@ import subprocess
 import sys
 import time
 
-# Pega a porta do Render
 port = os.environ.get("PORT", "8501")
 
-print("🦁 [RENDER] Modo Raiz Ativado.")
-print(f"📂 Arquivos na pasta: {os.listdir('.')}")
+print("🦁 [RENDER] Iniciando Diagnóstico...")
 
-# 1. Inicia a API (main.py solto na raiz)
-print("🦁 [RENDER] Iniciando API (main:app) na porta 8000...")
-subprocess.Popen([
-    sys.executable, "-m", "uvicorn", "main:app", 
-    "--host", "0.0.0.0", 
-    "--port", "8000"
-])
+# 1. Tenta ligar a API e joga o erro na tela (stderr=sys.stdout)
+print("🦁 [RENDER] Ligando API (main:app)...")
+api_process = subprocess.Popen(
+    [sys.executable, "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"],
+    stdout=sys.stdout,
+    stderr=sys.stdout  # <--- O Segredo: Mostra o erro na tela do Render
+)
 
-# Espera 5 segundos honestos
-time.sleep(5)
+# Espera 8 segundos (dá tempo do erro aparecer se tiver)
+time.sleep(8)
 
-# 2. Inicia o Streamlit
+# Verifica se a API morreu na largada
+if api_process.poll() is not None:
+    print("❌ [ERRO CRÍTICO] A API morreu logo após iniciar! Veja o erro acima.")
+    # Não vamos matar o script, vamos deixar o streamlit subir para você ver o erro,
+    # mas sabemos que vai falhar.
+else:
+    print("✅ [RENDER] A API parece estar viva!")
+
 print(f"🎨 [RENDER] Iniciando Streamlit na porta {port}...")
 subprocess.run([
     sys.executable, "-m", "streamlit", "run", "app_visual.py",

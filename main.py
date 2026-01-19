@@ -11,13 +11,19 @@ import time
 import os
 from rapidfuzz import fuzz # O Cérebro Inteligente
 
+import tempfile # <--- Adicione esta importação lá no topo se não tiver
+
+# ... (outros imports)
+
 # ==========================================
-# 1. BANCO DE DADOS (Versão Blindada para Deploy)
+# 1. BANCO DE DADOS (Modo Nuvem /tmp)
 # ==========================================
-# Pega a pasta onde este arquivo está
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# Salva o banco na MESMA pasta, sem inventar moda de subir nível
-DB_PATH = os.path.join(BASE_DIR, "saberius.db")
+# Usamos a pasta temporária do sistema operacional, que é sempre gravável
+tmp_dir = tempfile.gettempdir()
+DB_PATH = os.path.join(tmp_dir, "saberius.db")
+
+print(f"🦁 [BANCO] Salvando dados em: {DB_PATH}")
+
 SQLALCHEMY_DATABASE_URL = f"sqlite:///{DB_PATH}"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})

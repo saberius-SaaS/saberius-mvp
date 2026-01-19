@@ -6,3 +6,4 @@ requests
 rapidfuzz
 pydantic
 watchdog
+python-multipart
